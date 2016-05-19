@@ -1,5 +1,6 @@
 *.tar
 *.tar.*
+!imeji*.orig.tar.gz
 *.jar
 *.exe
 *.msi
@@ -12,6 +13,6 @@
 *.build
 *.changes
 *.dsc
-*war
+*.war
 
-debian/imeji
+*/debian/imeji
