@@ -1,0 +1,10 @@
+if [ -h /etc/tomcat8/elasticsearch ]
+then
+rm -f /etc/tomcat8/elasticsearch
+fi
+if [ -h /srv/web/imeji ]
+then
+rm -f /srv/web/imeji
+fi
+
+#DEBHELPER#

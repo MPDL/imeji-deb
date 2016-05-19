@@ -7,7 +7,11 @@
 *.tgz
 *.log
 *.log.*
-*.sig
+*.deb
+*.deb
+*.build
+*.changes
+*.dsc
+*war
 
-pkg/
-src/
+debian/imeji

@@ -1,0 +1,48 @@
+Template: imeji/url
+Type: string
+Default: http://localhost:8080/imeji
+Description: URL of this Imeji instance:
+ You can set the URL where Imeji is reachable.
+ In the default config Imeji is running in a Tomcat server.
+Description-de.UTF-8: URL dieser Imeji Instanz:
+ Setze die URL über die Imeji erreichbar sein soll. In der Standardkonfiguration  läuft Imeji in einem Tomcat-Server.
+
+Template: imeji/bundle
+Type: boolean
+Default: true
+Description: Store all Imeji data under a parent directory?
+ Imeji needs a file storage, a database storage and a storage for search index.
+Description-de.UTF-8: Alle Imeji-Daten unter einem Hauptverzeichnis speichern?
+ Imeji benötigt einen Speicherort für die Mediendateien, die Datenbank und den Suchindex.
+
+Template: imeji/default
+Type: string
+Default: /var/lib/imeji/
+Description: Enter the parent directory for your data:
+ Select the parent target of all Imeji data.
+Description-de.UTF-8: Gebe das Verezichnis an unter denen alle Imeji-Daten gesoeichert werden sollen.
+ Wähle das Hauptverzeichnis für alle Imeji-Daten aus.
+
+Template: imeji/db
+Type: string
+Default: /var/lib/imeji/tdb 
+Description: Enter the directory of the Imeji database:
+ Select the target of the Imeji database.
+Description-de.UTF-8: Gebe das Verzeichnis der Imeji-Datenbank ein:
+ Wähle den Speicherort der Datenbank.
+
+Template: imeji/files
+Type: string
+Default: /var/lib/imeji/files
+Description: Enter the Imeji files directory:
+ Select the target of the Imeji file storage.
+Description-de.UTF-8: Gebe das Verzeichnis für die medfiendateien von Imeji ein:
+ Wähle den Speicherort für die Mediendateien von imeji.
+
+Template: imeji/elastic
+Type: string
+Default: /var/lib/imeji/elastic-embedded/
+Description: Enter the directory for Imeji search index:
+ Select the target of the Imeji seartch index storage.
+Description-de.UTF-8: Gebe das Verzeichnis des Suchindexes von Imeji ein:
+ Wähle den Speicherort für den Suchindex von Imeji.

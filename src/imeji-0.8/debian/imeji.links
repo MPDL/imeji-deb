@@ -1,0 +1,3 @@
+#/etc/elasticsearch/ /etc/tomcat8/elasticsearch
+#/var/lib/tomcat8/ /srv/web/imeji
+

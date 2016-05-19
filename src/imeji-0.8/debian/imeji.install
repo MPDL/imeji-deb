@@ -1,0 +1,6 @@
+imeji.war /var/lib/tomcat8/webapps/
+../imeji.properties /etc/tomcat8/
+../imeji.md5sum /usr/share/tomcat8/
+../imeji.conf /etc/apache2/conf-available/
+../vocabulary.properties /etc/tomcat8/
+../digilib-config.xml /etc/tomcat8/

@@ -1,0 +1,10 @@
+Package: imeji
+Version: 0.8-6
+Architecture: amd64
+Maintainer: Benjamin Knoth <knoth@mpdl.mpg.de>
+Installed-Size: 180380
+Depends: debconf (>= 0.5) | debconf-2.0, tomcat8, imagemagick, ucf, elasticsearch (= 2.0.1) | elasticsearch (= 2.0.2)
+Section: misc
+Priority: extra
+Description: My first Imeji-Package
+ This is my first Package for Debian.

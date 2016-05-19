@@ -1,0 +1,93 @@
+# Translation of Imeji debconf templates to german.
+# Copyright (C) 2016, Benjamin Knoth.
+# This file is distributed under the same license as the Imeji package.
+# Benjamin Knoth <sysadmin@mpdl.mpg.de>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: imeji\n"
+"Report-Msgid-Bugs-To: sysadmin@mpdl.mpg.de\n"
+"POT-Creation-Date: 2016-05-17 10:08+0200\n"
+"PO-Revision-Date: 2016-05-17 12:59+0200\n"
+"Last-Translator: Benjamin Knoth <sysadmin@mpdl.mpg.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+#. Type: string
+#. Description
+#: ../imeji.templates:1001
+msgid "URL of this Imeji instance:"
+msgstr "URL dieser Imeji Instanz:"
+
+#. Type: string
+#. Description
+#: ../imeji.templates:1001
+msgid ""
+"You can set the URL where Imeji is reachable. In the default config Imeji is "
+"running in a Tomcat server."
+msgstr ""
+"Setze die URL über die Imeji erreichbar sein soll. In der Standardkonfiguration "
+" läuft Imeji in einem Tomcat-Server."
+
+#. Type: boolean
+#. Description
+#: ../imeji.templates:2001
+msgid "Store all Imeji data under a parent directory?"
+msgstr "Alle Imeji-Daten unter einem Hauptverzeichnis speichern?"
+
+#. Type: boolean
+#. Description
+#: ../imeji.templates:2001
+msgid ""
+"Imeji needs a file storage, a database storage and a storage for search "
+"index."
+msgstr ""
+"Imeji benötigt einen Speicherort für die Mediendateien, die Datenbank und den Suchindex."
+#. Type: string
+#. Description
+#: ../imeji.templates:3001
+msgid "Enter the parent directory for your data:"
+msgstr "Gebe das Verezichnis an unter denen alle Imeji-Daten gesoeichert werden sollen."
+
+#. Type: string
+#. Description
+#: ../imeji.templates:3001
+msgid "Select the parent target of all Imeji data."
+msgstr "Wähle das Hauptverzeichnis für alle Imeji-Daten aus."
+
+#. Type: string
+#. Description
+#: ../imeji.templates:4001
+msgid "Enter the directory of the Imeji database:"
+msgstr "Gebe das Verzeichnis der Imeji-Datenbank ein:"
+
+#. Type: string
+#. Description
+#: ../imeji.templates:4001
+msgid "Select the target of the Imeji database."
+msgstr "Wähle den Speicherort der Datenbank."
+
+#. Type: string
+#. Description
+#: ../imeji.templates:5001
+msgid "Enter the Imeji files directory:"
+msgstr "Gebe das Verzeichnis für die medfiendateien von Imeji ein:"
+
+#. Type: string
+#. Description
+#: ../imeji.templates:5001
+msgid "Select the target of the Imeji file storage."
+msgstr "Wähle den Speicherort für die Mediendateien von imeji."
+
+#. Type: string
+#. Description
+#: ../imeji.templates:6001
+msgid "Enter the directory for Imeji search index:"
+msgstr "Gebe das Verzeichnis des Suchindexes von Imeji ein:"
+
+#. Type: string
+#. Description
+#: ../imeji.templates:6001
+msgid "Select the target of the Imeji seartch index storage."
+msgstr "Wähle den Speicherort für den Suchindex von Imeji."

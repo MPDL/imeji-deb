@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: imeji\n"
+"Report-Msgid-Bugs-To: imeji@packages.debian.org\n"
+"POT-Creation-Date: 2016-05-13 14:53+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: string
+#. Description
+#: ../imeji.templates:1001
+msgid "URL of this Imeji instance:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:1001
+msgid ""
+"You can set the URL where Imeji is reachable. In the default config Imeji is "
+"running in a Tomcat server."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../imeji.templates:2001
+msgid "Store all Imeji data under a parent directory?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../imeji.templates:2001
+msgid ""
+"Imeji needs a file storage, a database storage and a storage for search "
+"index."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:3001
+msgid "Enter the parent directory for your data:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:3001
+msgid "Select the parent target of all Imeji data."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:4001
+msgid "Enter the directory of the Imeji database:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:4001
+msgid "Select the target of the Imeji database."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:5001
+msgid "Enter the Imeji files directory:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:5001
+msgid "Select the target of the Imeji file storage."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:6001
+msgid "Enter the directory for Imeji search index:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../imeji.templates:6001
+msgid "Select the target of the Imeji seartch index storage."
+msgstr ""

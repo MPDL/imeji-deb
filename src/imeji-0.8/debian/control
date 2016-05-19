@@ -1,0 +1,16 @@
+Source: imeji
+Section: misc
+Priority: extra
+Maintainer: Benjamin Knoth <knoth@mpdl.mpg.de>
+Build-Depends: debhelper (>=9),
+	       po-debconf
+Standards-Version: 3.9.7
+Homepage: 
+#Vcs-Git: git://github.com/imeji-community/imeji.git 
+Vcs-Browser: https://github.com/imeji-community/imeji.git
+
+Package: imeji
+Architecture: any
+Depends:${misc:Depends}, tomcat8, imagemagick, ucf, elasticsearch (=2.0.1) | elasticsearch (=2.0.2)
+Description: My first Imeji-Package
+ This is my first Package for Debian.

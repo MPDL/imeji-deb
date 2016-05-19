@@ -1,0 +1,36 @@
+Template: imeji/url
+Type: string
+Default: http://localhost:8080/imeji
+_Description: URL of this Imeji instance:
+ You can set the URL where Imeji is reachable.
+ In the default config Imeji is running in a Tomcat server.
+
+Template: imeji/bundle
+Type: boolean
+Default: true
+_Description: Store all Imeji data under a parent directory?
+ Imeji needs a file storage, a database storage and a storage for search index.
+
+Template: imeji/default
+Type: string
+Default: /var/lib/imeji/
+_Description: Enter the parent directory for your data:
+ Select the parent target of all Imeji data.
+
+Template: imeji/db
+Type: string
+Default: /var/lib/imeji/tdb 
+_Description: Enter the directory of the Imeji database:
+ Select the target of the Imeji database.
+
+Template: imeji/files
+Type: string
+Default: /var/lib/imeji/files
+_Description: Enter the Imeji files directory:
+ Select the target of the Imeji file storage.
+
+Template: imeji/elastic
+Type: string
+Default: /var/lib/imeji/elastic-embedded/
+_Description: Enter the directory for Imeji search index:
+ Select the target of the Imeji seartch index storage.
