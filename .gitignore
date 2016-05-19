@@ -14,5 +14,8 @@
 *.changes
 *.dsc
 *.war
+*.postrm.debhelper
+*.substvars
+*.diff.gz
 
-*/debian/imeji
+imeji/
