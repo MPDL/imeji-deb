@@ -1,8 +1,10 @@
-imeji (0.8-7) UNRELEASED; urgency=medium
+imeji (0.8-8) unstable; urgency=medium
 
   * Add new Imeji (3.4.0.0)
+  * Add Description
+  * Add Java 8 Depency 
 
- -- Benjamin Knoth <knoth@mpdl.mpg.de>  Thu, 19 May 2016 16:23:59 +0200
+ -- Benjamin Knoth <knoth@mpdl.mpg.de>  Fri, 20 May 2016 14:07:55 +0200
 
 imeji (0.8-6) unstable; urgency=medium
 
