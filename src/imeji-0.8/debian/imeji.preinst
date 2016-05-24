@@ -1,0 +1,22 @@
+#!/bin/sh
+
+#DEBHELPER#
+
+set -e
+
+##### Check Java Version #####
+if /usr/lib/jvm/default-java/bin/java -version 2>&1 | grep -q 'java version "1.8'
+then
+        echo "Java version checked and correct!";
+else
+        if java -version 2>&1 | grep -q 'java version "1.8'
+        then
+		ORACLE_JRE_HOME="$(readlink -f $(which java) | sed  "s/\/jre\/bin\/java//g")"
+                echo "Oracle jre found! Adding symlink: /usr/lib/jvm/default-java -> $ORACLE_JRE_HOME"
+                ln -s $ORACLE_JRE_HOME  /usr/lib/jvm/default-java
+        else
+                echo "Wrong Java Version. Please install Oracle Java 1.8 under /usr/lib/jvm/default-java/bin/java"
+		exit 1
+        fi
+fi
+
