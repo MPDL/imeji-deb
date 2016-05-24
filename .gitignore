@@ -19,3 +19,5 @@
 *.diff.gz
 
 imeji/
+imeji.md5sum
+imeji.properties

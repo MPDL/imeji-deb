@@ -1,11 +1,10 @@
 #!/usr/bin/make -f
+
 # See debhelper(7) (uncomment to enable)
 # output every command that modifies files on the build system.
 #export DH_VERBOSE = 1
-
 # see FEATURE AREAS in dpkg-buildflags(1)
 #export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-
 # see ENVIRONMENT in dpkg-buildflags(1)
 # package maintainers to append CFLAGS
 #export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
@@ -21,6 +20,13 @@
 #override_dh_auto_configure:
 #	dh_auto_configure -- #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 
-override_dh_auto_build: 
-			echo "Downlowding imeji.war..."
+override_dh_auto_clean:
+			echo "Removing downloaded files..."
+			rm -f imeji.*
+override_dh_auto_build:
+			echo "Downloading imeji.properties..."
+			wget https://raw.githubusercontent.com/imeji-community/imeji/master/src/main/resources/imeji.properties
+			echo "Downloading imeji.war..."
 			wget -O imeji.war http://rd.mpdl.mpg.de/nexus/service/local/repositories/releases/content/org/imeji/imeji/3.4.0.0/imeji-3.4.0.0.war
+			echo "Downloading md5 checksum..."
+			wget -O imeji.md5sum http://rd.mpdl.mpg.de/nexus/service/local/repositories/releases/content/org/imeji/imeji/3.4.0.0/imeji-3.4.0.0.war.md5
