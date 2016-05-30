@@ -9,7 +9,10 @@ set -e
 
 USER=tomcat8
 
-##### Prepare imeji.properties ##### 
+####################################
+##### Prepare imeji.properties #####
+####################################
+ 
 CONFFILE="/etc/tomcat8/imeji.properties"
 
         # Generate $CONFFILE from debconf seetings and $TEMPLATE
@@ -31,31 +34,119 @@ CONFFILE="/etc/tomcat8/imeji.properties"
         ucf --debconf-ok --sum-file /usr/share/tomcat8/imeji.md5sum $tmpfile $CONFFILE
 	rm -f $tmpfile
 
-
-###### Create directories for imeji #####
+##########################################
+###### Create directories for imeji ######
+##########################################
 
 if [ ! -d $imejistoragepath ]
 then
-mkdir -p $imejistoragepath
+	mkdir -p $imejistoragepath
 fi
 if [ ! -d $imejitdbpath ]
-then
+	then
 mkdir -p $imejitdbpath
 fi
 if [ ! -d $elasticclusterhome ]
 then
-mkdir -p $elasticclusterhome
+	mkdir -p $elasticclusterhome
 fi
-if id -u $USER > /dev/null 2>&1; then    
+if id -u $USER > /dev/null 2>&1; 
+then    
     chown -R ${USER}:${USER} $imejistoragepath $imejitdbpath $elasticclusterhome 
 fi
 
 if [ ! -h /etc/tomcat8/elasticsearch ]
 then
-ln -s /etc/elasticsearch /etc/tomcat8/elasticsearch
+	ln -s /etc/elasticsearch /etc/tomcat8/elasticsearch
 fi
-if [ ! -d /srv/web ]
+
+##################################
+##### Set Java Version #####
+##################################
+
+CONFIG="/etc/default/tomcat8"
+JAVA_PATH="/usr/lib/jvm/default-java/bin/java"
+
+### Check in /etc/default/tomcat8 the JAVA_HOME. If set, use it for next step, else use /usr/lib/jvm/default-java/bin/java
+if grep -oPq "^JAVA_HOME=\K(.*)" $CONFIG
 then
-mkdir /srv/web
-ln -s /var/lib/tomcat8/ /srv/web/imeji
+        JAVA_PATH="$(grep -oP "^JAVA_HOME=\K(.*)" $CONFIG)"
+        echo "Java configuration found in $CONFIG : $JAVA_PATH"
+else
+        echo "No Java configured in $CONFIG"
+        echo "Using default Java confgiration: $JAVA_PATH"
 fi
+
+#### Check if JAVA_PATH is a valid java version(i.e oracle 1.8), else check if the current Java (found by java -version) is valid, else ask user to install java
+if $JAVA_PATH -version 2>&1 | grep -q 'java version "1.8'
+then
+        echo "Java version checked and correct!";
+else
+        if java -version 2>&1 | grep -q 'java version "1.8'
+        then
+                echo "Oracle JRE is currently used as default Java. Will use it for tomcat!"
+                JAVA_PATH="$(readlink -f $(which java) | sed  "s/\/jre\/bin\/java//g")"
+        else
+                echo "Wrong Java Version. Please install Oracle Java 1.8"
+                exit 1
+        fi
+fi
+
+#### Set JAVA_HOME in /etc/default/tomcat8 with correct value (JAVA_PATH)
+if grep -oPq "^JAVA_HOME=\K(.*)" $CONFIG
+then
+        JAVA_HOME_OLD="$(grep -oP "^JAVA_HOME=\K(.*)" $CONFIG)"
+        echo "Replacing JAVA_HOME=$JAVA_HOME_OLD in $CONFIG with JAVA_HOME=$JAVA_PATH"
+        sed -i "s|JAVA_HOME=$JAVA_HOME_OLD|JAVA_HOME=$JAVA_PATH|g" $CONFIG
+else
+        echo "Appending JAVA_HOME=$JAVA_PATH to $CONFIG"
+        echo "JAVA_HOME=$JAVA_PATH" >> $CONFIG
+fi
+
+#########################
+##### Set JAVA_OPTS #####
+#########################
+
+### Find RAM available
+RAM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+echo "Available memory $RAM"
+
+### Calculate recommanded xmx value according to RAM
+XMX="512m"
+
+if (( $RAM > "16000" ))
+then
+        XMX="4096m"
+elif (( $RAM > "8000" ))
+then
+        XMX="2048m"
+elif (( $RAM  > "4000" ))
+then
+        XMX="1024m"
+fi
+
+### Setting JAVA_OPTS
+JAVA_OPTS="-server -Xms$XMX -Xmx$XMX -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+HeapDumpOnOutOfMemoryError"
+echo "Setting JAVA_OPTS in $CONFIG" with $JAVA_OPTS
+
+if grep -oPq "^JAVA_OPTS=\K(.*)" $CONFIG
+then
+        JAVA_OPTS_OLD="$(grep -oP "^JAVA_OPTS=\K(.*)" $CONFIG)"
+        echo "Replacing JAVA_OPTS=$JAVA_OPTS_OLD in $CONFIG with JAVA_OPTS=\"$JAVA_OPTS\""
+        sed -i "s|JAVA_OPTS=$JAVA_OPTS_OLD|JAVA_OPTS=\"$JAVA_OPTS\"|g" $CONFIG
+else
+        echo "Appending JAVA_OPTS=\"$JAVA_OPTS\" to $CONFIG"
+        echo "JAVA_OPTS=\"$JAVA_OPTS\"" >> $CONFIG
+fi
+
+####################################
+##### Modify Tomcat server.xml #####
+####################################
+
+SERVER_XML="/var/lib/tomcat8/conf/server.xml"
+CONNECTOR_DEFAULT="<Connector port=\"8080\" protocol=\"HTTP/1.1\""
+
+echo "Setting up $SERVER_XML"
+
+### enable compression
+sed -i  "s|$CONNECTOR_DEFAULT|$CONNECTOR_DEFAULT compression=\"on\" compressableMimeType=\"text/html,text/xml,text/plain,text/css,application/x-javascript,application/xml,application/javascript,application/json,application/xhtml+xml\"|g" $SERVER_XML
