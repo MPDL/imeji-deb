@@ -15,9 +15,9 @@ CONFFILE="/etc/tomcat8/imeji.properties"
         # Generate $CONFFILE from debconf seetings and $TEMPLATE
         db_version 2.0
 	db_get imeji/url && imejiinstanceurl="$RET" || imejiinstanceurl="http://localhost:8080/imeji"
-        db_get imeji/elastic && elasticclusterhome="$RET" || elasticclusterhome="/var/lib/imeji/elastic-embedded"
-        db_get imeji/db && imejitdbpath="$RET" || imejitdbpath="/var/lib/imeji/tdb"
-        db_get imeji/files && imejistoragepath="$RET" || imejistoragepath="/var/lib/imeji/files"
+        db_get imeji/elastic && elasticclusterhome="$RET" || elasticclusterhome="/var/lib/imeji/db/elastic-embedded"
+        db_get imeji/db && imejitdbpath="$RET" || imejitdbpath="/var/lib/imeji//db/tdb"
+        db_get imeji/files && imejistoragepath="$RET" || imejistoragepath="/var/lib/imeji/db/files"
 
 	tmpfile=`mktemp /tmp/imeji.reconfig.XXXXXXXXXX`
         chmod 644 $tmpfile
@@ -30,6 +30,10 @@ CONFFILE="/etc/tomcat8/imeji.properties"
 
         ucf --debconf-ok --sum-file /usr/share/tomcat8/imeji.md5sum $tmpfile $CONFFILE
 	rm -f $tmpfile
+
+
+###### Create directories for imeji #####
+
 if [ ! -d $imejistoragepath ]
 then
 mkdir -p $imejistoragepath

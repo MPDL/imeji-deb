@@ -30,3 +30,6 @@ override_dh_auto_build:
 			wget -O imeji.war http://rd.mpdl.mpg.de/nexus/service/local/repositories/releases/content/org/imeji/imeji/3.4.0.0/imeji-3.4.0.0.war
 			echo "Downloading md5 checksum..."
 			wget -O imeji.md5sum http://rd.mpdl.mpg.de/nexus/service/local/repositories/releases/content/org/imeji/imeji/3.4.0.0/imeji-3.4.0.0.war.md5
+			echo "Cleaning imeji.properties"
+			sed -i -e 's/= /=/g' imeji.properties
+			sed -i -e 's/ =/=/g' imeji.properties

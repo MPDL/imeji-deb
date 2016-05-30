@@ -1,22 +1,50 @@
-#!/bin/sh
+#!/bin/bash
 
 #DEBHELPER#
 
 set -e
 
-##### Check Java Version #####
-if /usr/lib/jvm/default-java/bin/java -version 2>&1 | grep -q 'java version "1.8'
+##################################
+##### Check/set Java Version #####
+##################################
+
+CONFIG="/etc/default/tomcat8"
+JAVA_PATH="/usr/lib/jvm/default-java/bin/java"
+
+### Check in /etc/default/tomcat8 the JAVA_HOME. If set, use it for next step, else use /usr/lib/jvm/default-java/bin/java
+if grep -oPq "^JAVA_HOME=\K(.*)" $CONFIG
+then
+        JAVA_PATH="$(grep -oP "^JAVA_HOME=\K(.*)" $CONFIG)"
+        echo "Java configuration found in $CONFIG : $JAVA_PATH"
+else
+        echo "No Java configured in $CONFIG"
+        echo "Using default Java confgiration: $JAVA_PATH"
+fi
+
+#### Check if JAVA_PATH is a valid java version(i.e oracle 1.8), else check if the current Java (found by java -version) is valid, else ask user to install java
+if $JAVA_PATH -version 2>&1 | grep -q 'java version "1.8'
 then
         echo "Java version checked and correct!";
 else
         if java -version 2>&1 | grep -q 'java version "1.8'
         then
-		ORACLE_JRE_HOME="$(readlink -f $(which java) | sed  "s/\/jre\/bin\/java//g")"
-                echo "Oracle jre found! Adding symlink: /usr/lib/jvm/default-java -> $ORACLE_JRE_HOME"
-                ln -s $ORACLE_JRE_HOME  /usr/lib/jvm/default-java
+                echo "Oracle JRE is currently used as default Java. Will use it for tomcat!"
+                JAVA_PATH="$(readlink -f $(which java) | sed  "s/\/jre\/bin\/java//g")"
         else
-                echo "Wrong Java Version. Please install Oracle Java 1.8 under /usr/lib/jvm/default-java/bin/java"
-		exit 1
+                echo "Wrong Java Version. Please install Oracle Java 1.8"
+                exit 1
         fi
 fi
+
+#### Set JAVA_HOME in /etc/default/tomcat8 with correct value (JAVA_PATH)
+if grep -oPq "^JAVA_HOME=\K(.*)" $CONFIG
+then
+        JAVA_HOME_OLD="$(grep -oP "^JAVA_HOME=\K(.*)" $CONFIG)"
+        echo "Replacing JAVA_HOME=$JAVA_HOME_OLD in $CONFIG with JAVA_HOME=$JAVA_PATH"
+        sed -i "s|JAVA_HOME=$JAVA_HOME_OLD|JAVA_HOME=$JAVA_PATH|g" $CONFIG
+else
+        echo "Appending JAVA_HOME=$JAVA_PATH to $CONFIG"
+        echo "JAVA_HOME=$JAVA_PATH" >> $CONFIG
+fi
+
 
