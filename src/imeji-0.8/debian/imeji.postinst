@@ -114,13 +114,13 @@ echo "Available memory $RAM"
 ### Calculate recommanded xmx value according to RAM
 XMX="512m"
 
-if (( $RAM > "16000" ))
+if (( $RAM > "16000000" ))
 then
         XMX="4096m"
-elif (( $RAM > "8000" ))
+elif (( $RAM > "8000000" ))
 then
         XMX="2048m"
-elif (( $RAM  > "4000" ))
+elif (( $RAM  > "4000000" ))
 then
         XMX="1024m"
 fi
@@ -149,14 +149,16 @@ CONNECTOR_DEFAULT="<Connector port=\"8080\" protocol=\"HTTP/1.1\""
 echo "Setting up $SERVER_XML"
 
 ### enable compression
-sed -i  "s|$CONNECTOR_DEFAULT|$CONNECTOR_DEFAULT compression=\"on\" compressableMimeType=\"text/html,text/xml,text/plain,text/css,application/x-javascript,application/xml,application/javascript,application/json,application/xhtml+xml\"|g" $SERVER_XML
+sed -i  "s|$CONNECTOR_DEFAULT.*|$CONNECTOR_DEFAULT compression=\"on\" compressableMimeType=\"text/html,text/xml,text/plain,text/css,application/x-javascript,application/xml,application/javascript,application/json,application/xhtml+xml\"|g" $SERVER_XML
 
 #####################################
 ##### Enabling imeji for Apache #####
 #####################################
 
-echo "Enablinf imeji configuration for Apache"
+echo "Enabling imeji configuration for Apache"
 a2enconf imeji
+a2enmod proxy
+a2enmod proxy_http
 service apache2 restart
 
 ##########################
