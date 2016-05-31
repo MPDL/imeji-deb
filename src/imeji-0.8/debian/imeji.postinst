@@ -150,3 +150,25 @@ echo "Setting up $SERVER_XML"
 
 ### enable compression
 sed -i  "s|$CONNECTOR_DEFAULT|$CONNECTOR_DEFAULT compression=\"on\" compressableMimeType=\"text/html,text/xml,text/plain,text/css,application/x-javascript,application/xml,application/javascript,application/json,application/xhtml+xml\"|g" $SERVER_XML
+
+#####################################
+##### Enabling imeji for Apache #####
+#####################################
+
+echo "Enablinf imeji configuration for Apache"
+a2enconf imeji
+service apache2 restart
+
+##########################
+##### Restart Tomcat #####
+##########################
+
+echo "Restarting tomcat"
+service tomcat8 restart
+
+###############
+##### END #####
+###############
+
+echo "Congratulations! imeji successfully installed!"
+
