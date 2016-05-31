@@ -18,7 +18,7 @@ then
         echo "Java configuration found in $CONFIG : $JAVA_PATH"
 else
         echo "No Java configured in $CONFIG"
-        echo "Using default Java confgiration: $JAVA_PATH"
+        echo "Using default Java configuration: $JAVA_PATH"
 fi
 
 #### Check if JAVA_PATH is a valid java version(i.e oracle 1.8), else check if the current Java (found by java -version) is valid, else ask user to install java
@@ -31,7 +31,9 @@ else
                 echo "Oracle JRE is currently used as default Java. Will use it for tomcat!"
                 JAVA_PATH="$(readlink -f $(which java) | sed  "s/\/jre\/bin\/java//g")"
         else
-                echo "Wrong Java Version. Please install Oracle Java 1.8"
+		echo "############ imeji installation aborted!!! ###########"
+		echo "No valid Java version found: Please install Oracle JRE 1.8"
+		echo "To install Java, see http://www.oracle.com/technetwork/java/javase/downloads/index.html"
                 exit 1
         fi
 fi
