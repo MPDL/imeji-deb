@@ -126,17 +126,20 @@ then
 fi
 
 ### Setting JAVA_OPTS
-JAVA_OPTS="-server -Xms$XMX -Xmx$XMX -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+HeapDumpOnOutOfMemoryError"
-echo "Setting JAVA_OPTS in $CONFIG" with $JAVA_OPTS
-
-if grep -oPq "^JAVA_OPTS=\K(.*)" $CONFIG
+if (( $RAM  > "1000000" ))
 then
-        JAVA_OPTS_OLD="$(grep -oP "^JAVA_OPTS=\K(.*)" $CONFIG)"
-        echo "Replacing JAVA_OPTS=$JAVA_OPTS_OLD in $CONFIG with JAVA_OPTS=\"$JAVA_OPTS\""
-        sed -i "s|JAVA_OPTS=$JAVA_OPTS_OLD|JAVA_OPTS=\"$JAVA_OPTS\"|g" $CONFIG
-else
-        echo "Appending JAVA_OPTS=\"$JAVA_OPTS\" to $CONFIG"
-        echo "JAVA_OPTS=\"$JAVA_OPTS\"" >> $CONFIG
+	JAVA_OPTS="-server -Xms$XMX -Xmx$XMX -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+HeapDumpOnOutOfMemoryError"
+	echo "Setting JAVA_OPTS in $CONFIG" with $JAVA_OPTS
+
+	if grep -oPq "^JAVA_OPTS=\K(.*)" $CONFIG
+	then
+        	JAVA_OPTS_OLD="$(grep -oP "^JAVA_OPTS=\K(.*)" $CONFIG)"
+        	echo "Replacing JAVA_OPTS=$JAVA_OPTS_OLD in $CONFIG with JAVA_OPTS=\"$JAVA_OPTS\""
+        	sed -i "s|JAVA_OPTS=$JAVA_OPTS_OLD|JAVA_OPTS=\"$JAVA_OPTS\"|g" $CONFIG
+	else
+        	echo "Appending JAVA_OPTS=\"$JAVA_OPTS\" to $CONFIG"
+        	echo "JAVA_OPTS=\"$JAVA_OPTS\"" >> $CONFIG
+	fi
 fi
 
 ####################################
@@ -161,6 +164,36 @@ a2enmod proxy
 a2enmod proxy_http
 service apache2 restart
 
+#################################
+##### Setting elasticsearch #####
+#################################
+
+ELASTICSEARCH_CONF="/etc/elasticsearch/elasticsearch.yml"
+ELASTIC_CLUSTER_NAME="$imejiinstanceurl-elastic-cluster"
+
+echo "Checking elasticsearch (default elasticsearch cluster name: $ELASTIC_CLUSTER_NAME)"
+i
+if grep -oPq "^elastic.cluster.name=Your Cluster name.*" $CONFFILE
+then
+        echo "Setting default elasticsearch cluster name in $CONFFILE"
+        sed -i  "s|^elastic.cluster.name=Your Cluster name.*|elastic.cluster.name=$ELASTIC_CLUSTER_NAME|g" $CONFFILE
+else
+        echo "Cluster name already defined in $CONFFILE: $(grep ^elastic.cluster.name= $CONFFILE) "
+fi
+
+if [ -f $ELASTICSEARCH_CONF ]
+then
+        if grep -oPq "^cluster.name:.*" $ELASTICSEARCH_CONF
+        then
+                echo "Cluster name already defined in $ELASTICSEARCH_CONF: $(grep ^cluster.name:.* $ELASTICSEARCH_CONF)"
+        else
+                echo "Setting default elasticsearch cluster name in $ELASTICSEARCH_CONF"
+                sed -i  "s|# cluster.name:.*|cluster.name: $ELASTIC_CLUSTER_NAME|g" $ELASTICSEARCH_CONF
+        fi
+else
+        echo "elasticsearch not found! For better performance, imeji should run with elasticsearch"
+fi
+
 ##########################
 ##### Restart Tomcat #####
 ##########################
@@ -172,5 +205,8 @@ service tomcat8 restart
 ##### END #####
 ###############
 
+echo " "
+echo "##############################################"
 echo "Congratulations! imeji successfully installed!"
-
+echo "##############################################"
+echo " "
