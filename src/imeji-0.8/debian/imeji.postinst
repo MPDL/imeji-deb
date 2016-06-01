@@ -194,6 +194,19 @@ else
         echo "elasticsearch not found! For better performance, imeji should run with elasticsearch"
 fi
 
+
+#############################
+##### Seeting logrotate #####
+#############################
+
+LOG_ROTATE_IMEJI="/etc/logrotate.d/imeji"
+if [ ! -f $LOG_ROTATE_IMEJI ]
+then
+        echo "adding logrotate for imeji"
+        cp /etc/logrotate.d/tomcat8 $LOG_ROTATE_IMEJI
+        sed -i  "s|/var/log/tomcat8/catalina.out|$LOG_ROTATE_IMEJI/imeji.log|g" $LOG_ROTATE_IMEJI
+fi
+
 ##########################
 ##### Restart Tomcat #####
 ##########################
