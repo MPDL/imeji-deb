@@ -31,9 +31,26 @@ else
                 echo "Oracle JRE is currently used as default Java. Will use it for tomcat!"
                 JAVA_PATH="$(readlink -f $(which java) | sed  "s/\/jre\/bin\/java//g")"
         else
-		echo "############ imeji installation aborted!!! ###########"
+		echo " "
+		echo "######################################################"
+		echo " "
+		echo "       !!!!! imeji installation aborted !!!!!"
+		echo " "
 		echo "No valid Java version found: Please install Oracle JRE 1.8"
-		echo "To install Java, see http://www.oracle.com/technetwork/java/javase/downloads/index.html"
+		echo "To install it:"
+		echo " "
+		echo "Download it from http://www.oracle.com/technetwork/java/javase/downloads/index.html"
+		echo " "
+		echo "or"
+		echo " "
+		echo "Follow these instructions:"
+		echo "sudo echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list"
+		echo "sudo echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list"
+		echo "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886"
+		echo "apt-get update"
+		echo "apt-get install oracle-java8-installer"
+		echo " "
+		echo "######################################################"
                 exit 1
         fi
 fi
