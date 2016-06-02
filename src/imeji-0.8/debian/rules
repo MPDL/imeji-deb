@@ -33,3 +33,4 @@ override_dh_auto_build:
 			echo "Cleaning imeji.properties"
 			sed -i -e 's/= /=/g' imeji.properties
 			sed -i -e 's/ =/=/g' imeji.properties
+			mv imeji.properties imeji.template
