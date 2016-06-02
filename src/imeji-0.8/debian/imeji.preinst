@@ -33,8 +33,10 @@ else
         else
 		echo " "
 		echo "######################################################"
-		echo " "
-		echo "       !!!!! imeji installation aborted !!!!!"
+		echo "#                                                    # "
+		echo "#      !!!!! imeji installation aborted !!!!!        #" 
+		echo "#                                                    #"
+		echo "######################################################"
 		echo " "
 		echo "No valid Java version found: Please install Oracle JRE 1.8"
 		echo "To install it:"
@@ -50,7 +52,6 @@ else
 		echo "apt-get update"
 		echo "apt-get install oracle-java8-installer"
 		echo " "
-		echo "######################################################"
                 exit 1
         fi
 fi

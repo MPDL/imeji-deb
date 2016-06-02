@@ -13,13 +13,12 @@ USER=tomcat8
 ##### Prepare imeji.properties #####
 ####################################
 
-IMEJI_PROPERTIES_PATH="/etc/tomcat8/imeji.properties"
-CONFFILE=$IMEJI_PROPERTIES_PATH
+CONFFILE="/etc/tomcat8/imeji.properties"
 TEMPLATE="/etc/tomcat8/imeji.template"
 
 if [[ ! -f $CONFFILE ]]
 then
-        CONFFILE=$TEMPLATE
+	cp $TEMPLATE $CONFFILE
 fi
 
 echo "Preparing imeji.properties from $CONFFILE "
@@ -27,9 +26,9 @@ echo "Preparing imeji.properties from $CONFFILE "
         # Generate $CONFFILE from debconf settings and $TEMPLATE
         db_version 2.0
 	db_get imeji/url && imejiinstanceurl="$RET" || imejiinstanceurl="http://localhost:8080/imeji"
-        db_get imeji/elastic && elasticclusterhome="$RET" || elasticclusterhome="/var/lib/imeji/db/elastic-embedded"
-        db_get imeji/db && imejitdbpath="$RET" || imejitdbpath="/var/lib/imeji//db/tdb"
-        db_get imeji/files && imejistoragepath="$RET" || imejistoragepath="/var/lib/imeji/db/files"
+        db_get imeji/elastic && elasticclusterhome="$RET" || elasticclusterhome="/var/lib/imeji/elastic-embedded"
+        db_get imeji/db && imejitdbpath="$RET" || imejitdbpath="/var/lib/imeji/tdb"
+        db_get imeji/files && imejistoragepath="$RET" || imejistoragepath="/var/lib/imeji/files"
 
 	tmpfile=`mktemp /tmp/imeji.reconfig.XXXXXXXXXX`
         chmod 644 $tmpfile
@@ -42,12 +41,6 @@ echo "Preparing imeji.properties from $CONFFILE "
 
         ucf --debconf-ok --sum-file /usr/share/tomcat8/imeji.md5sum $tmpfile $CONFFILE
 	rm -f $tmpfile
-
-if [[ ! -f $IMEJI_PROPERTIES_PATH ]]
-then
-	echo "Creating $IMEJI_PROPERTIES_PATH"
-	cp $CONFFILE $IMEJI_PROPERTIES_PATH
-fi
 
 ##########################################
 ###### Create directories for imeji ######
