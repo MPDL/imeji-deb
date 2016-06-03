@@ -176,12 +176,15 @@ sed -i "s|<parameter name=\"basedir-list\" value=\".*|<parameter name=\"basedir-
 ##### Enabling imeji for Apache #####
 #####################################
 
-echo "Enabling imeji configuration for Apache"
-a2enconf imeji
-a2enmod proxy
-a2enmod proxy_http
-service apache2 restart
-
+db_get imeji/apache
+if [ "$RET" = "true"  ]
+then
+	echo "Enabling imeji configuration for Apache"
+	a2enconf imeji
+	a2enmod proxy
+	a2enmod proxy_http
+	service apache2 restart
+fi
 #################################
 ##### Setting elasticsearch #####
 #################################
@@ -214,6 +217,27 @@ else
         echo "elasticsearch not found! For better performance, imeji should run with elasticsearch"
 fi
 
+### Set elasticsearch Heap size
+
+ES_DEFAULT="/etc/default/elasticsearch"
+
+ES_HEAP_SIZE=$(grep "^ES_HEAP_SIZE=.*" $ES_DEFAULT)
+if [ -z $ES_HEAP_SIZE ]
+then
+        echo "Setting Elasticsearch heap size to $XMX in $ES_DEFAULT"
+        sed -i "s|#ES_HEAP_SIZE=.*|ES_HEAP_SIZE=$XMX|g" $ES_DEFAULT
+else
+        echo "Elasticsearch heap size $ES_HEAP_SIZE"
+fi
+
+### Install plugin analysis-icu
+
+if [ ! -d /usr/share/elasticsearch/plugins/analysis-icu ]
+then
+        /usr/share/elasticsearch/bin/plugin install analysis-icu
+else
+        echo "Elasticsearch plugin analysis-icu already installed"
+fi
 
 #############################
 ##### Seeting logrotate #####
@@ -239,7 +263,11 @@ service tomcat8 restart
 ###############
 
 echo " "
-echo "##############################################"
-echo "Congratulations! imeji successfully installed!"
-echo "##############################################"
+echo "##################################################"
+echo "#                                                # " 
+echo "# Congratulations! imeji successfully installed! #"
+echo "#                                                #""
+echo "##################################################"
+echo " "
+echo "Check out: $imejiinstanceurl"
 echo " "

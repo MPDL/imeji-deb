@@ -34,3 +34,8 @@ Type: string
 Default: /var/lib/imeji/elastic-embedded/
 _Description: Enter the directory for Imeji search index:
  Select the target of the Imeji seartch index storage.
+
+Template: imeji/apache
+Type: boolean
+Default: true
+_Description: Do you want to use the imeji default Apache configuration? (Not recommanded if you have other web services running on this server)
