@@ -186,6 +186,10 @@ fi
 ELASTICSEARCH_CONF="/etc/elasticsearch/elasticsearch.yml"
 ELASTIC_CLUSTER_NAME="$imejiinstanceurl-elastic-cluster"
 
+# Remove "http(s)//:" and non word character from ELASTIC_CLUSTER_NAME
+ELASTIC_CLUSTER_NAME=$(echo "$ELASTIC_CLUSTER_NAME" | sed 's|http[s]*://||g')
+ELASTIC_CLUSTER_NAME=$(echo "$ELASTIC_CLUSTER_NAME" | sed 's|[^A-Za-z0-9]|_|g')
+
 echo "Checking elasticsearch (default elasticsearch cluster name: $ELASTIC_CLUSTER_NAME)"
 
 if grep -oPq "^elastic.cluster.name=Your Cluster name.*" $CONFFILE
@@ -207,11 +211,18 @@ then
         fi
 	echo "starting elasticsearch"
 	service elasticsearch start
+	echo " "
+        echo "!!!!!! IMPORTANT !!!!!!"
+        echo "$(grep "^elastic.cluster.name=.*" $CONFFILE) in $CONFFILE"
+        echo "should most probably have the same value than"
+        echo "$(grep "^cluster.name:.*" $ELASTICSEARCH_CONF)  in $ELASTICSEARCH_CONF"
+        echo "!!!!!!!!!!!!!!!!!!!!!!!"
+	echo " "
 else
         echo "elasticsearch not found! For better performance, imeji should run with elasticsearch"
 fi
 
-### Set elasticsearch Heap size
+### Set elasticsiearch Heap size
 
 ES_DEFAULT="/etc/default/elasticsearch"
 
