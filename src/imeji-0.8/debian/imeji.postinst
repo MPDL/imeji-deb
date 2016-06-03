@@ -14,12 +14,6 @@ USER=tomcat8
 ####################################
 
 CONFFILE="/etc/tomcat8/imeji.properties"
-TEMPLATE="/etc/tomcat8/imeji.template"
-
-if [[ ! -f $CONFFILE ]]
-then
-	cp $TEMPLATE $CONFFILE
-fi
 
 echo "Preparing imeji.properties from $CONFFILE "
 
@@ -239,6 +233,10 @@ else
         echo "Elasticsearch plugin analysis-icu already installed"
 fi
 
+### restart elasticsearch
+
+service elasticsearch restart
+
 #############################
 ##### Seeting logrotate #####
 #############################
@@ -264,9 +262,9 @@ service tomcat8 restart
 
 echo " "
 echo "##################################################"
-echo "#                                                # " 
+echo "#                                                #" 
 echo "# Congratulations! imeji successfully installed! #"
-echo "#                                                #""
+echo "#                                                #"
 echo "##################################################"
 echo " "
 echo "Check out: $imejiinstanceurl"

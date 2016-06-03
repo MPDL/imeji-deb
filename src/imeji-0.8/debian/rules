@@ -33,6 +33,5 @@ override_dh_auto_build:
 			echo "Cleaning imeji.properties"
 			sed -i -e 's/= /=/g' imeji.properties
 			sed -i -e 's/ =/=/g' imeji.properties
-			mv imeji.properties imeji.template
-			sed -i "s|/data/imeji|/var/lib/imeji|g" imeji.template
-			sed -i "s|elastic.analyser=standard|elastic.analyser=ducet_sort|g" imeji.template
+			sed -i "s|/data/imeji|/var/lib/imeji|g" imeji.properties
+			sed -i "s|elastic.analyser=standard|elastic.analyser=ducet_sort|g" imeji.properties
