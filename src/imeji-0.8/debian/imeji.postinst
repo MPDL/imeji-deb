@@ -144,41 +144,6 @@ then
 	fi
 fi
 
-####################################
-##### Modify Tomcat server.xml #####
-####################################
-
-SERVER_XML="/var/lib/tomcat8/conf/server.xml"
-CONNECTOR_DEFAULT="<Connector port=\"8080\" protocol=\"HTTP/1.1\""
-
-echo "Setting up $SERVER_XML"
-
-### enable compression
-sed -i  "s|$CONNECTOR_DEFAULT.*|$CONNECTOR_DEFAULT compression=\"on\" compressableMimeType=\"text/html,text/xml,text/plain,text/css,application/x-javascript,application/xml,application/javascript,application/json,application/xhtml+xml\"|g" $SERVER_XML
-
-##################################
-##### Set digilib-config.xml #####
-##################################
-
-DIGILIB_CONFIG="/etc/tomcat8/digilib-config.xml"
-STORAGE_PARENT=$(echo $imejistoragepath | sed 's,/*[^/]\+/*$,,')
-echo "Setting $DIGILIB_CONFIG with $STORAGE_PARENT"
-
-sed -i "s|<parameter name=\"basedir-list\" value=\".*|<parameter name=\"basedir-list\" value=\"$STORAGE_PARENT\" />|g" $DIGILIB_CONFIG
-
-#####################################
-##### Enabling imeji for Apache #####
-#####################################
-
-db_get imeji/apache
-if [ "$RET" = "true"  ]
-then
-	echo "Enabling imeji configuration for Apache"
-	a2enconf imeji
-	a2enmod proxy
-	a2enmod proxy_http
-	service apache2 restart
-fi
 #################################
 ##### Setting elasticsearch #####
 #################################
@@ -210,46 +175,93 @@ then
                 sed -i  "s|# cluster.name:.*|cluster.name: $ELASTIC_CLUSTER_NAME|g" $ELASTICSEARCH_CONF
         fi
 	echo " "
-        echo "!!!!!! IMPORTANT !!!!!!"
-        echo "$(grep "^elastic.cluster.name=.*" $CONFFILE) in $CONFFILE"
-        echo "should most probably have the same value than"
-        echo "$(grep "^cluster.name:.*" $ELASTICSEARCH_CONF)  in $ELASTICSEARCH_CONF"
-        echo "!!!!!!!!!!!!!!!!!!!!!!!"
-	echo " "
+        echo "###############################"
+	echo "#          IMPORTANT!         #"
+	echo "###############################"
+	echo "# "
+        echo "# $(grep "^elastic.cluster.name=.*" $CONFFILE)       in $CONFFILE"
+        echo "# should most probably have the same value than"
+        echo "# $(grep "^cluster.name:.*" $ELASTICSEARCH_CONF)     in $ELASTICSEARCH_CONF"
+        echo "#"
+	echo "# If not, imeji and your elasticsearch installation won't be in the same cluster. "
+	echo "#"
+	echo "#"
 else
-        echo "elasticsearch not found! For better performance, imeji should run with elasticsearch"
+        echo "elasticsearch not found! For better performance, imeji should run with elasticsearch."
+	echo "If you run elasticsearch of another server, please set the elastic.cluster.name property in $CONFFILE"
 fi
 
 ### Set elasticsearch Heap size
 
 ES_DEFAULT="/etc/default/elasticsearch"
-
-echo "Checking Elasticsearch Heap size"
-
-if ! grep -q "^ES_HEAP_SIZE=.*" $ES_DEFAULT
+if (( $RAM  > "2000000" ))
 then
-        echo "Setting Elasticsearch heap size to $XMX in $ES_DEFAULT"
-        sed -i "s|#ES_HEAP_SIZE=.*|ES_HEAP_SIZE=$XMX|g" $ES_DEFAULT
-else
-        echo "Elasticsearch heap size $(grep "^ES_HEAP_SIZE=.*" $ES_DEFAULT)"
+	echo "Checking Elasticsearch Heap size"
+
+	if ! grep -q "^ES_HEAP_SIZE=.*" $ES_DEFAULT
+	then
+        	echo "Setting Elasticsearch heap size to $XMX in $ES_DEFAULT"
+        	sed -i "s|#ES_HEAP_SIZE=.*|ES_HEAP_SIZE=$XMX|g" $ES_DEFAULT
+	else
+        	echo "Elasticsearch heap size $(grep "^ES_HEAP_SIZE=.*" $ES_DEFAULT)"
+	fi
 fi
+
+echo "Starting elasticsearch service"
+service elasticsearch start
 
 ### Install plugin analysis-icu
 
 if [ ! -d /usr/share/elasticsearch/plugins/analysis-icu ]
 then
+	service elasticsearch stop
         /usr/share/elasticsearch/bin/plugin install analysis-icu
+	echo "Restarting elasticsearch to enable plugin"
+	service elasticsearch start
 else
         echo "Elasticsearch plugin analysis-icu already installed"
 fi
 
-### restart elasticsearch
+service elasticsearch status
 
-echo "Starting elasticsearch service"
-service elasticsearch restart
+####################################
+##### Modify Tomcat server.xml #####
+####################################
+
+SERVER_XML="/var/lib/tomcat8/conf/server.xml"
+CONNECTOR_DEFAULT="<Connector port=\"8080\" protocol=\"HTTP/1.1\""
+
+echo "Setting up $SERVER_XML"
+
+### enable compression
+sed -i  "s|$CONNECTOR_DEFAULT.*|$CONNECTOR_DEFAULT compression=\"on\" compressableMimeType=\"text/html,text/xml,text/plain,text/css,application/x-javascript,application/xml,application/javascript,application/json,application/xhtml+xml\"|g" $SERVER_XML
+
+##################################
+##### Set digilib-config.xml #####
+##################################
+
+DIGILIB_CONFIG="/etc/tomcat8/digilib-config.xml"
+STORAGE_PARENT=$(echo $imejistoragepath | sed 's,/*[^/]\+/*$,,')
+echo "Setting $DIGILIB_CONFIG with $STORAGE_PARENT"
+
+sed -i "s|<parameter name=\"basedir-list\" value=\".*|<parameter name=\"basedir-list\" value=\"$STORAGE_PARENT\" />|g" $DIGILIB_CONFIG
+
+#####################################
+##### Enabling imeji for Apache #####
+#####################################
+
+db_get imeji/apache
+if [ "$RET" = "true"  ]
+then
+        echo "Enabling imeji configuration for Apache"
+        a2enconf imeji
+        a2enmod proxy
+        a2enmod proxy_http
+        service apache2 restart
+fi
 
 #############################
-##### Seeting logrotate #####
+##### Setting logrotate #####
 #############################
 
 LOG_ROTATE_IMEJI="/etc/logrotate.d/imeji"
@@ -277,6 +289,7 @@ echo "#                                                #"
 echo "# Congratulations! imeji successfully installed! #"
 echo "#                                                #"
 echo "##################################################"
-echo " "
-echo "Check out: $imejiinstanceurl"
+echo "#"
+echo "# Check out: $imejiinstanceurl"
+echo "#"
 echo " "
