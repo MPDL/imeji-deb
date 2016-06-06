@@ -34,4 +34,8 @@ override_dh_auto_build:
 			sed -i -e 's/= /=/g' imeji.properties
 			sed -i -e 's/ =/=/g' imeji.properties
 			sed -i "s|/data/imeji|/var/lib/imeji|g" imeji.properties
+			sed -i "s|digilib.configuration.path=.*|digilib.configuration.path=/etc/tomcat8/digilib-config.xml|g" imeji.properties
+			sed -i "s|imeji.digilib.enable=false|imeji.digilib.enable=true|g" imeji.properties
+			sed -i "s|imeji.imagemagick.enable=false|imeji.imagemagick.enable=true|g" imeji.properties
+			sed -i "s|imeji.imagemagick.installpath=/usr/local/bin|imeji.imagemagick.installpath=/usr/bin|g" imeji.properties
 			sed -i "s|elastic.analyser=standard|elastic.analyser=ducet_sort|g" imeji.properties

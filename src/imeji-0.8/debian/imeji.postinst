@@ -209,8 +209,6 @@ then
                 echo "Setting default elasticsearch cluster name in $ELASTICSEARCH_CONF"
                 sed -i  "s|# cluster.name:.*|cluster.name: $ELASTIC_CLUSTER_NAME|g" $ELASTICSEARCH_CONF
         fi
-	echo "starting elasticsearch"
-	service elasticsearch start
 	echo " "
         echo "!!!!!! IMPORTANT !!!!!!"
         echo "$(grep "^elastic.cluster.name=.*" $CONFFILE) in $CONFFILE"
@@ -222,17 +220,18 @@ else
         echo "elasticsearch not found! For better performance, imeji should run with elasticsearch"
 fi
 
-### Set elasticsiearch Heap size
+### Set elasticsearch Heap size
 
 ES_DEFAULT="/etc/default/elasticsearch"
 
-ES_HEAP_SIZE=$(grep "^ES_HEAP_SIZE=.*" $ES_DEFAULT)
-if [ -z $ES_HEAP_SIZE ]
+echo "Checking Elasticsearch Heap size"
+
+if ! grep -q "^ES_HEAP_SIZE=.*" $ES_DEFAULT
 then
         echo "Setting Elasticsearch heap size to $XMX in $ES_DEFAULT"
         sed -i "s|#ES_HEAP_SIZE=.*|ES_HEAP_SIZE=$XMX|g" $ES_DEFAULT
 else
-        echo "Elasticsearch heap size $ES_HEAP_SIZE"
+        echo "Elasticsearch heap size $(grep "^ES_HEAP_SIZE=.*" $ES_DEFAULT)"
 fi
 
 ### Install plugin analysis-icu
@@ -246,6 +245,7 @@ fi
 
 ### restart elasticsearch
 
+echo "Starting elasticsearch service"
 service elasticsearch restart
 
 #############################
