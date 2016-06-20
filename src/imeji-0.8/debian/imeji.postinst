@@ -258,6 +258,9 @@ then
         a2enmod proxy
         a2enmod proxy_http
         service apache2 restart
+else
+	a2disconf imeji
+	service apache2 reload
 fi
 
 #############################
