@@ -25,7 +25,7 @@ override_dh_auto_clean:
 			rm -f imeji.*
 override_dh_auto_build:
 			echo "Downloading imeji.properties..."
-			wget https://raw.githubusercontent.com/imeji-community/imeji/master/src/main/resources/imeji.properties
+			wget https://raw.githubusercontent.com/MPDL/imeji/master/src/main/resources/imeji.properties
 			echo "Downloading imeji.war..."
 			wget -O imeji.war http://rd.mpdl.mpg.de/nexus/service/local/artifact/maven/redirect?r=releases&g=org.imeji&a=imeji&v=RELEASE&e=war
 			echo "Downloading md5 checksum..."
