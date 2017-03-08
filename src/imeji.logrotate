@@ -1,0 +1,13 @@
+/var/log/tomcat8/imeji.log.* /var/log/tomcat8/localhost_access_log.*.txt {
+  copytruncate
+  daily
+  rotate 0
+  compress
+  delaycompress
+  missingok
+  create 640 tomcat8 adm
+  lastaction
+   /usr/bin/find /var/log/tomcat8/ -mtime +14 -delete
+   /usr/bin/find /var/log/tomcat8/ -mtime +1 -exec gzip -q {} \;
+  endscript
+}
