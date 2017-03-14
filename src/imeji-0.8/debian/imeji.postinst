@@ -14,8 +14,9 @@ USER=tomcat8
 ####################################
 
 CONFFILE="/etc/tomcat8/imeji.properties"
+TEMPLATE="/usr/share/tomcat8/imeji.properties"
 
-echo "Preparing imeji.properties from $CONFFILE "
+echo "Preparing imeji.properties from $TEMPLATE "
 
         # Generate $CONFFILE from debconf settings and $TEMPLATE
         db_version 2.0
@@ -23,23 +24,57 @@ echo "Preparing imeji.properties from $CONFFILE "
         db_get imeji/elastic && elasticclusterhome="$RET" || elasticclusterhome="/var/lib/imeji/elastic-embedded"
         db_get imeji/db && imejitdbpath="$RET" || imejitdbpath="/var/lib/imeji/tdb"
         db_get imeji/files && imejistoragepath="$RET" || imejistoragepath="/var/lib/imeji/files"
-
+	db_get imeji/default && default_answer="$RET" || default_answer="/var/lib/imeji/"
+	elasticclustername="${imejiinstanceurl}-elastic-cluster" || elasticclustername="localhost_8080_imeji_elastic_cluster"
+	elasticclustername=$(echo "$elasticclustername" | sed 's|http[s]*://||g')
+	elasticclustername=$(echo "$elasticclustername" | sed 's|[^A-Za-z0-9]|_|g')
 	tmpfile=`mktemp /tmp/imeji.reconfig.XXXXXXXXXX`
         chmod 644 $tmpfile
-        cat $CONFFILE \
+	
+	cat $TEMPLATE \
                 | sed "s%^elastic.cluster.home=.*$%elastic.cluster.home=$elasticclusterhome%" \
                 | sed "s%^imeji.tdb.path=.*$%imeji.tdb.path=$imejitdbpath%" \
                 | sed "s%^imeji.storage.path=.*$%imeji.storage.path=$imejistoragepath%" \
                 | sed "s%^imeji.instance.url=.*$%imeji.instance.url=$imejiinstanceurl%" \
                 >> $tmpfile
 
+if [ -e $CONFFILE ]
+then
+	if grep -oPq "^elastic.cluster.name=Your Cluster name.*" $CONFFILE
+        then
+        cat $tmpfile \
+                | sed "s%^elastic.cluster.name=.*$%elastic.cluster.name=$elasticclustername%" \
+                >> $CONFFILE
+        elif grep -oPq "^elastic.cluster.name=$" $CONFFILE
+        then
+        cat $tmpfile \
+                | sed "s%^elastic.cluster.name=.*$%elastic.cluster.name=$elasticclustername%" \
+                >> $CONFFILE
+        else
+	elasticclustername=`grep elastic.cluster.name $CONFFILE |sed 's/.*elastic.cluster.name=//'`
+	tmpfile1=`mktemp /tmp/imeji.reconfig.XXXXXXXXXX`
+        chmod 644 $tmpfile1
+	cat $tmpfile \
+                | sed "s%^elastic.cluster.name=.*$%elastic.cluster.name=$elasticclustername%" \
+                >> $tmpfile1
+	mv $tmpfile1 $tmpfile
         ucf --debconf-ok --sum-file /usr/share/tomcat8/imeji.md5sum $tmpfile $CONFFILE
-	rm -f $tmpfile
+        fi
+else
+        cat $tmpfile \
+                | sed "s%^elastic.cluster.name=.*$%elastic.cluster.name=$elasticclustername%" \
+                >> $CONFFILE
+#        mv $tmpfile $CONFFILE
+fi
 
+	rm -f $tmpfile 
+#	rm -f /tmp/imeji.reconfig.*
 ##########################################
 ###### Create directories for imeji ######
 ##########################################
-
+if [ ! -d $default_answer ]
+then
+	mkdir -p $default_answer
 if [ ! -d $imejistoragepath ]
 then
 	mkdir -p $imejistoragepath
@@ -56,6 +91,8 @@ if id -u $USER > /dev/null 2>&1;
 then    
     chown -R ${USER}:${USER} $imejistoragepath $imejitdbpath $elasticclusterhome 
 fi
+fi
+	chown -R ${USER}:${USER} $default_answer
 
 if [ ! -h /etc/tomcat8/elasticsearch ]
 then
@@ -161,6 +198,10 @@ if grep -oPq "^elastic.cluster.name=Your Cluster name.*" $CONFFILE
 then
         echo "Setting default elasticsearch cluster name in $CONFFILE"
         sed -i  "s|^elastic.cluster.name=Your Cluster name.*|elastic.cluster.name=$ELASTIC_CLUSTER_NAME|g" $CONFFILE
+elif grep -oPq "^elastic.cluster.name=$" $CONFFILE
+then
+        echo "Setting default elasticsearch cluster name in $CONFFILE"
+        sed -i  "s|^elastic.cluster.name=|elastic.cluster.name=$ELASTIC_CLUSTER_NAME|g" $CONFFILE
 else
         echo "Cluster name already defined in $CONFFILE: $(grep ^elastic.cluster.name= $CONFFILE) "
 fi
@@ -222,7 +263,7 @@ else
         echo "Elasticsearch plugin analysis-icu already installed"
 fi
 
-service elasticsearch status
+##service elasticsearch status
 
 ####################################
 ##### Modify Tomcat server.xml #####
@@ -254,13 +295,27 @@ db_get imeji/apache
 if [ "$RET" = "true"  ]
 then
         echo "Enabling imeji configuration for Apache"
+	if [ ! -e /etc/apache2/conf-enabled/imeji.conf ]
+	then
         a2enconf imeji
+        service apache2 reload
+	fi
+	if [ ! -e /etc/apache2/mods-enabled/proxy.conf ]
+	then
         a2enmod proxy
+        service apache2 restart
+	fi
+	if [ ! -e /etc/apache2/mods-enabled/proxy_http.load ]
+	then
         a2enmod proxy_http
         service apache2 restart
+	fi
 else
+	if [ -e /etc/apache2/conf-enabled/imeji.conf ]
+        then
 	a2disconf imeji
 	service apache2 reload
+	fi
 fi
 
 #############################

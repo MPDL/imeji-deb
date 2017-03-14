@@ -4,20 +4,23 @@ Priority: extra
 Maintainer: Benjamin Knoth <knoth@mpdl.mpg.de>
 Build-Depends: debhelper (>=9),
 	       po-debconf
-Standards-Version: 3.9.7
+Standards-Version: 3.9.8
 Homepage: 
-#Vcs-Git: git://github.com/imeji-community/imeji.git 
-Vcs-Browser: https://github.com/imeji-community/imeji.git
+#Vcs-Git: git://github.com/MPDL/imeji-deb
+Vcs-Browser: https://github.com/MPDL/imeji-deb
 
 Package: imeji
 Architecture: any
-Depends:${misc:Depends}, tomcat8, imagemagick, ucf, apache2, elasticsearch (=2.0.1) | elasticsearch (=2.0.2)
-Description: imeji
- imeji creates citable research assets by describing, enriching, sharing, exposing, linking and archiving data.
+Depends:${misc:Depends}, tomcat8, imagemagick, ucf, apache2, elasticsearch (=2.3.2)
+Description: Scientific multimedia data repository with dedicated metadata management
+ imeji creates citable research assets by describing, enriching, sharing, 
+ exposing, linking and archiving data.
  .
- The imeji community aims to initiate and sustain an active open source software developer community around the 
- imeji software. Originated in March 2012 from the Max Planck Digital Library, the Institute of Art and Visual 
- History of the Humboldt-Universität zu Berlin and the Konrad Zuse Internet Archive of Freie Universität Berlin, 
- the community constantly grows.
+ The imeji community aims to initiate and sustain an active open source software
+ developer community around the imeji software. Originated in March 2012 from
+ the Max Planck Digital Library, the Institute of Art and Visual  History of
+ the Humboldt-Universität zu Berlin and the Konrad Zuse Internet Archive of
+ Freie Universität Berlin, the community constantly grows.
  .
- We are open to everyone who wants to get involved and contribute to the imeji development. Please contact us for further information.
+ We are open to everyone who wants to get involved and contribute to the
+ imeji development. Please contact us for further information.

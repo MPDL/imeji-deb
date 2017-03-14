@@ -1,3 +1,13 @@
+#!/bin/sh
+set -e
+
+#DEBHELPER#
+
+CONFFILE="/etc/tomcat8/imeji.properties"
+TEMPLATE="/usr/share/tomcat8/imeji.properties"
+
+case "$1" in
+    remove)
 if [ -h /etc/tomcat8/elasticsearch ]
 then
 rm -f /etc/tomcat8/elasticsearch
@@ -6,5 +16,40 @@ if [ -h /srv/web/imeji ]
 then
 rm -f /srv/web/imeji
 fi
+if [ -h /var/lib/tomcat8/webapps/imeji ]
+then
+rm -f /var/lib/tomcat8/webapps/imeji
+fi
+if [ -h /etc/apache2/conf-enabled/imeji.conf ]
+then
+	rm -f /etc/apache2/conf-enabled/imeji.conf
+	service apache2 reload
+fi
+;;
+    upgrade)
+	 ;;
 
-#DEBHELPER#
+    purge)
+        # ignore errors during purge
+        set +e
+        if [ -x "/usr/bin/ucf" ]; then
+            ucf --purge $CONFFILE
+        fi
+	if [ -e /etc/tomcat8/imeji.properties ]
+	then
+	    rm -rf /etc/tomcat8/imeji.properties
+	fi
+	if [ -e /var/lib/tomcat8/webapps/imeji ]
+	then
+	    rm -rf /var/lib/tomcat8/webapps/imeji
+	fi
+   	 ;;
+
+   failed-upgrade|abort-install|abort-upgrade|disappear)
+         ;;
+
+    *)
+        echo "$0 called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac

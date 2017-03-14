@@ -25,6 +25,7 @@ fi
 if $JAVA_PATH -version 2>&1 | grep -q 'java version "1.8'
 then
         echo "Java version checked and correct!";
+	ucf --purge /etc/tomcat8/imeji.properties
 else
         if java -version 2>&1 | grep -q 'java version "1.8'
         then

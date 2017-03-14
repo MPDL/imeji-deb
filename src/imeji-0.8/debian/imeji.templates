@@ -9,7 +9,7 @@ Template: imeji/bundle
 Type: boolean
 Default: true
 _Description: Store all Imeji data under a parent directory?
- Imeji needs a file storage, a database storage and a storage for search index.
+  It needs a file storage, a database storage and a storage for search index.
 
 Template: imeji/default
 Type: string
@@ -38,4 +38,4 @@ _Description: Enter the directory for Imeji search index:
 Template: imeji/apache
 Type: boolean
 Default: true
-_Description: Do you want to use the imeji default Apache configuration? (Not recommanded if you have other web services running on this server)
+_Description: Do you want to use the imeji default Apache configuration?
