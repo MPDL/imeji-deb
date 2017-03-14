@@ -13,7 +13,7 @@ Package: imeji
 Architecture: any
 Depends:${misc:Depends}, tomcat8, imagemagick, ucf, apache2, elasticsearch (=2.3.2)
 Description: Scientific multimedia data repository with dedicated metadata management
- imeji creates citable research assets by describing, enriching, sharing, 
+ imeji creates citable research assets by describing, enriching, sharing,
  exposing, linking and archiving data.
  .
  The imeji community aims to initiate and sustain an active open source software
@@ -24,3 +24,4 @@ Description: Scientific multimedia data repository with dedicated metadata manag
  .
  We are open to everyone who wants to get involved and contribute to the
  imeji development. Please contact us for further information.
+
