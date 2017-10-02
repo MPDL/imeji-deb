@@ -104,12 +104,14 @@ fi
 ##################################
 
 CONFIG="/etc/default/tomcat8"
-JAVA_PATH="/usr/lib/jvm/default-java/bin/java"
+JAVA_PATH="/usr/lib/jvm/default-java"
+JAVA_BIN_PATH="/usr/lib/jvm/default-java/bin/java"
 
 ### Check in /etc/default/tomcat8 the JAVA_HOME. If set, use it for next step, else use /usr/lib/jvm/default-java/bin/java
 if grep -oPq "^JAVA_HOME=\K(.*)" $CONFIG
 then
         JAVA_PATH="$(grep -oP "^JAVA_HOME=\K(.*)" $CONFIG)"
+		JAVA_BIN_PATH="$JAVA_PATH/bin/java"
         echo "Java configuration found in $CONFIG : $JAVA_PATH"
 else
         echo "No Java configured in $CONFIG"
@@ -117,7 +119,7 @@ else
 fi
 
 #### Check if JAVA_PATH is a valid java version(i.e oracle 1.8), else check if the current Java (found by java -version) is valid, else ask user to install java
-if $JAVA_PATH -version 2>&1 | grep -q 'java version "1.8'
+if $JAVA_BIN_PATH -version 2>&1 | grep -q 'java version "1.8'
 then
         echo "Java version checked and correct!";
 else
